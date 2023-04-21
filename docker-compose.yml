@@ -8,8 +8,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.1'
-          memory: 150M
+          cpus: '0.2'
+          memory: 300M
 
   worker:
     build: worker
@@ -21,8 +21,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 1400M
+          cpus: '0.7'
+          memory: 300M
     depends_on:
       broker:
         condition: service_started
