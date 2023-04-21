@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "cloud-worker"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "1.0.0"
+celery = "5.2.7"
+flower = "1.2.0"
+redis = "4.5.4"
+cloud-db = {git = "https://github.com/b-munar/cloud-db.git"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
