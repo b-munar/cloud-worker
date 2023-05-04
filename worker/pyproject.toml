@@ -11,6 +11,7 @@ python-dotenv = "1.0.0"
 celery = "5.2.7"
 flower = "1.2.0"
 redis = "4.5.4"
+google-cloud-storage = "^2.8.0"
 cloud-db = {git = "https://github.com/b-munar/cloud-db.git"}
 
 

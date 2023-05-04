@@ -1,9 +1,10 @@
 import zipfile
 import tarfile
+from io import StringIO, BytesIO
 from cloud_db.models import File, Task
 from database import Session
 from celery import Celery
-
+from gcp_storage import download_file, upload_file
 
 app = Celery('tasks', backend='redis://broker:6379', broker='redis://broker:6379')
 
@@ -15,11 +16,24 @@ def setup_periodic_tasks(sender, **kwargs):
 def compress_zip(file_id):
     session = Session()
     file_to_zip = session.query(File).filter(File.id == file_id).first() 
-    with zipfile.ZipFile(f"{file_to_zip.dir}/{file_to_zip.name.split('.')[0]}.zip", 'w') as zip:
-        zip.write(file_to_zip.path)
-        task = session.query(Task).filter(Task.file_id==file_id).first()
-        task.status=True
-        session.commit()
+
+    file_download, content_type = download_file(bucket_name="gropo-2-nube-2023", file_name=file_to_zip.path)
+    
+    in_memory_zip = BytesIO()
+
+    with zipfile.ZipFile(in_memory_zip, "a", zipfile.ZIP_DEFLATED, False) as zip:
+        zip.writestr(file_to_zip.name, file_download)
+    
+    in_memory_zip.seek(0)
+
+    upload_file(bucket_name="gropo-2-nube-2023", 
+                source_file=in_memory_zip, 
+                destination_file_name=f"{file_to_zip.dir}/{file_to_zip.name.split('.')[0]}.zip",
+                content_type="application/zip"
+                )
+    task = session.query(Task).filter(Task.file_id==file_id).first()
+    task.status=True
+    session.commit()
         
 @app.task()
 def compress_targz(file_id):
@@ -50,5 +64,6 @@ def queueing():
         compress_targz.delay(task_to_targz.file_id)
     for task_to_tarbz2 in  session.query(Task).filter(Task.status == False, Task.type_task==3):
         compress_tarbz2.delay(task_to_tarbz2.file_id)
+    session.close()
         
         
