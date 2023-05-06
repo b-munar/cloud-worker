@@ -5,6 +5,9 @@ from cloud_db.models import File, Task
 from database import Session
 from celery import Celery
 from gcp_storage import download_file, upload_file
+import os
+import shutil
+
 
 app = Celery('tasks', backend='redis://broker:6379', broker='redis://broker:6379')
 
@@ -17,22 +20,21 @@ def compress_zip(file_id):
     session = Session()
     file_to_zip = session.query(File).filter(File.id == file_id).first() 
 
-    file_download, content_type = download_file(bucket_name="gropo-2-nube-2023", file_name=file_to_zip.path)
-    
-    in_memory_zip = BytesIO()
+    os.makedirs(f"/{file_to_zip.dir}", exist_ok=True)
 
-    with zipfile.ZipFile(in_memory_zip, "a", zipfile.ZIP_DEFLATED, False) as zip:
-        zip.writestr(file_to_zip.name, file_download)
+    download_file(bucket_name="gropo-2-nube-2023", file_cloud_name=file_to_zip.path)
     
-    in_memory_zip.seek(-8,1)
+    with zipfile.ZipFile(f"/{file_to_zip.dir}/{file_to_zip.name.split('.')[0]}.zip", 'w') as zip:
+        zip.write(f"/{file_to_zip.path}")
+
 
     upload_file(bucket_name="gropo-2-nube-2023", 
-                source_file=in_memory_zip, 
+                source_file=f"/{file_to_zip.dir}/{file_to_zip.name.split('.')[0]}.zip", 
                 destination_file_name=f"{file_to_zip.dir}/{file_to_zip.name.split('.')[0]}.zip",
                 content_type="application/zip"
                 )
 
-    in_memory_zip.close()
+    shutil.rmtree(f"/{file_to_zip.dir}")
     
     task = session.query(Task).filter(Task.file_id==file_id).first()
     task.status=True
