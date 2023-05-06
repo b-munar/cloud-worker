@@ -13,7 +13,7 @@ app = Celery('tasks', backend='redis://broker:6379', broker='redis://broker:6379
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(5.0, queueing.s())
+    sender.add_periodic_task(1.0, queueing.s())
 
 @app.task()
 def compress_zip(file_id):
