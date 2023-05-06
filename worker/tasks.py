@@ -39,6 +39,7 @@ def compress_zip(file_id):
     task = session.query(Task).filter(Task.file_id==file_id).first()
     task.status=True
     session.commit()
+    queueing.delay()
         
 @app.task()
 def compress_targz(file_id):
@@ -63,7 +64,7 @@ def compress_tarbz2(file_id):
 @app.task()
 def queueing():
     session = Session()
-    for task_to_zip in session.query(Task).filter(Task.status == False, Task.type_task==1).limit(10).all():
+    for task_to_zip in session.query(Task).filter(Task.status == False, Task.type_task==1).limit(2).all():
         compress_zip.delay(task_to_zip.file_id)
     for task_to_targz in  session.query(Task).filter(Task.status == False, Task.type_task==2):
         compress_targz.delay(task_to_targz.file_id)

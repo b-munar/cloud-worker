@@ -16,7 +16,11 @@ Para utilizar flower, ir al bash del server,
 
 y escribir en ese bash,
 
-> celery -A tasks.compress.celery flower  --address=0.0.0.0 --port=5566
+> poetry run celery -A tasks flower  --address=0.0.0.0 --port=5566
+
+poetry run python
+from tasks import queueing
+queueing.delay()
 
 Para utilizar prometheus, en una terminal a nivel de sistema
 
