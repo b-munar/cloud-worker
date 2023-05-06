@@ -31,6 +31,9 @@ def compress_zip(file_id):
                 destination_file_name=f"{file_to_zip.dir}/{file_to_zip.name.split('.')[0]}.zip",
                 content_type="application/zip"
                 )
+
+    in_memory_zip.close()
+    
     task = session.query(Task).filter(Task.file_id==file_id).first()
     task.status=True
     session.commit()
