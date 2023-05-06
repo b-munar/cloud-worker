@@ -13,6 +13,7 @@ services:
 
   worker:
     build: worker
+    restart: always
     volumes:
       - ./worker:/usr/src/app
       - ./files-cloud:/files-cloud
