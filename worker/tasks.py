@@ -69,6 +69,6 @@ def queueing():
         compress_targz.delay(task_to_targz.file_id)
     for task_to_tarbz2 in  session.query(Task).filter(Task.status == False, Task.type_task==3):
         compress_tarbz2.delay(task_to_tarbz2.file_id)
-    session.close()
+    #session.close()
         
         
