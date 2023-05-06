@@ -13,7 +13,7 @@ app = Celery('tasks', backend='redis://broker:6379', broker='redis://broker:6379
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(1.0, queueing.s())
+    sender.add_periodic_task(10.0, queueing.s())
 
 @app.task()
 def compress_zip(file_id):
@@ -63,7 +63,7 @@ def compress_zip(file_id):
 @app.task()
 def queueing():
     session = Session()
-    for task_to_zip in session.query(Task).filter(Task.status == False, Task.type_task==1).limit(5).all():
+    for task_to_zip in session.query(Task).filter(Task.status == False, Task.type_task==1).all():
         compress_zip.delay(task_to_zip.file_id)
     # for task_to_targz in  session.query(Task).filter(Task.status == False, Task.type_task==2):
     #     compress_targz.delay(task_to_targz.file_id)
