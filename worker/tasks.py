@@ -1,6 +1,6 @@
 import zipfile
 import tarfile
-from io import BytesIO
+from io import StringIO, BytesIO
 from cloud_db.models import File, Task
 from database import Session
 from celery import Celery
@@ -24,7 +24,7 @@ def compress_zip(file_id):
     with zipfile.ZipFile(in_memory_zip, "a", zipfile.ZIP_DEFLATED, False) as zip:
         zip.writestr(file_to_zip.name, file_download)
     
-    in_memory_zip.seek(-4, 2)
+    in_memory_zip.seek(-8,1)
 
     upload_file(bucket_name="gropo-2-nube-2023", 
                 source_file=in_memory_zip, 
