@@ -9,3 +9,4 @@ class Config:
     DATABASE=os.getenv("DATABASE")
     PASSWORD=os.getenv("PASSWORD")
     PORT=os.getenv("PORT")
+    GOOGLE_CLOUD_PROJECT=os.getenv("GOOGLE_CLOUD_PROJECT")

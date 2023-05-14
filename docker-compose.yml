@@ -1,29 +1,14 @@
 version: '3.9'
 
 services:
-  broker:
-    image: redis:7.0-alpine
-    ports:
-      - '6379:6379'
-    deploy:
-      resources:
-        limits:
-          cpus: '0.05'
-          memory: 50M
-
   worker:
     build: worker
     restart: always
     volumes:
       - ./worker:/usr/src/app
       - ./files-cloud:/files-cloud
-    ports:
-      - 5566:5566
     deploy:
       resources:
         limits:
-          cpus: '0.85'
+          cpus: '0.9'
           memory: 550M
-    depends_on:
-      broker:
-        condition: service_started
