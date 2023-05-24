@@ -8,5 +8,5 @@ class Config:
     HOST=os.getenv("HOST")
     DATABASE=os.getenv("DATABASE")
     PASSWORD=os.getenv("PASSWORD")
-    PORT=os.getenv("PORT")
+    PORT_DB=os.getenv("PORT_DB")
     GOOGLE_CLOUD_PROJECT=os.getenv("GOOGLE_CLOUD_PROJECT")

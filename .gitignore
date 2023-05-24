@@ -10,5 +10,4 @@ venv/
 *.iml
 *.idea
 
-files-cloud/
-worker/linen-mason-384315-d051f5f132d3.json
+linen-mason-384315-d051f5f132d3.json

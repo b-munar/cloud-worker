@@ -6,7 +6,7 @@ engine = engine_postgresql(
             host=Config.HOST,
             database=Config.DATABASE,
             password=Config.PASSWORD,
-            port=Config.PORT
+            port=Config.PORT_DB
             )
 
 Session = sessionmaker(bind=engine)
